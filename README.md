@@ -40,7 +40,7 @@ A comprehensive forensic investigation analyzing suspected user negligence, cred
 * Timeline reconstruction
 * Clear conclusions and actionable security recommendations
 
-📄 See: `forensic-report.pdf`
+📄 See: `digital-forensics-report.pdf`
 
 ---
 
