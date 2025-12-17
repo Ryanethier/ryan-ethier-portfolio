@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ryan Ethier | Cybersecurity & Digital Forensics Portfolio</title>
+  <meta name="description" content="Cybersecurity student portfolio featuring digital forensics reports, labs, and hands-on security projects." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #121826;
+      --text: #e6e8ee;
+      --muted: #9aa3b2;
+      --accent: #4da3ff;
+      --border: #1f2937;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(180deg, #0b0f14, #0e1422);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-bottom: 4rem;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      max-width: 700px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .badge {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      padding: 0.35rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    section {
+      margin-bottom: 4rem;
+    }
+
+    section h2 {
+      font-size: 1.6rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
+
+    .card h3 {
+      font-size: 1.05rem;
+      margin: 0;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .card ul {
+      padding-left: 1.1rem;
+      margin: 0.25rem 0 0.5rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .meta {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Ryan Ethier</h1>
+      <p>
+        Cybersecurity student specializing in digital forensics, incident response, and hands-on security labs.
+        Experienced in forensic reporting, vulnerability analysis, and defensive monitoring through academic and
+        real-world IT support work.
+      </p>
+      <div class="badges">
+        <span class="badge">Cybersecurity (BS)</span>
+        <span class="badge">Digital Forensics</span>
+        <span class="badge">Incident Response</span>
+        <span class="badge">Network Security</span>
+        <span class="badge">CTFs & Labs</span>
+      </div>
+    </header>
+
+    <section id="projects">
+      <h2>Selected Projects</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Python-Based Network Scanner</h3>
+          <p>
+            Custom network scanning tool built on Nmap concepts to identify open ports, services, and potential
+            misconfigurations within a home lab environment.
+          </p>
+          <ul>
+            <li>Automated port and service enumeration</li>
+            <li>Log generation and alerting</li>
+            <li>Designed for Raspberry Pi deployment</li>
+          </ul>
+          <div class="meta">
+            <span>Python · Linux · Networking</span>
+            <a href="#">View Details</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Intrusion Detection & Snort Analysis</h3>
+          <p>
+            Development and testing of Snort IDS signatures to detect suspicious traffic patterns across simulated
+            enterprise networks.
+          </p>
+          <ul>
+            <li>Custom rule writing and tuning</li>
+            <li>PCAP analysis and alert validation</li>
+            <li>Visibility and blind-spot assessment</li>
+          </ul>
+          <div class="meta">
+            <span>Snort · Wireshark · TCP/IP</span>
+            <a href="#">View Details</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>CTF & Wargame Write‑Ups</h3>
+          <p>
+            Documented solutions for Capture‑the‑Flag challenges focusing on Linux privilege escalation, basic
+            exploitation, and enumeration techniques.
+          </p>
+          <ul>
+            <li>OverTheWire Bandit progression</li>
+            <li>Hands-on Linux security fundamentals</li>
+            <li>Clear, reproducible write-ups</li>
+          </ul>
+          <div class="meta">
+            <span>Linux · Bash · Security</span>
+            <a href="#">View Write‑Ups</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="forensics">
+      <h2>Digital Forensics Case Report</h2>
+      <div class="card">
+        <h3>Corporate Incident Investigation</h3>
+        <p>
+          Comprehensive forensic investigation of a suspected security incident involving user negligence,
+          credential exposure, and potential attacker activity. Conducted following professional forensic
+          methodologies.
+        </p>
+        <ul>
+          <li>Disk image analysis (NTFS, artifacts, metadata)</li>
+          <li>Email and credential artifact examination</li>
+          <li>Timeline reconstruction and findings analysis</li>
+          <li>Formal conclusions and security recommendations</li>
+        </ul>
+        <div class="meta">
+          <span>FTK · Autopsy · Windows Artifacts</span>
+          <a href="#">Read Full Report (PDF)</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <h2>About Me</h2>
+      <p style="max-width: 800px; color: var(--muted);">
+        I am a cybersecurity student and U.S. Air Force veteran with experience in physical security and IT service
+        desk operations. My interests center on digital forensics, incident response, and defensive security.
+        I value clear documentation, methodical investigation, and translating technical findings into
+        understandable reports.
+      </p>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <p class="muted">
+        Email: <a href="mailto:your.email@example.com">your.email@example.com</a><br />
+        LinkedIn: <a href="#">linkedin.com/in/yourprofile</a><br />
+        GitHub: <a href="#">github.com/yourusername</a>
+      </p>
+    </section>
+
+    <footer>
+      © 2026 Ryan Ethier · Built as a living portfolio
+    </footer>
+  </div>
+</body>
+</html>
