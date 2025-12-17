@@ -4,7 +4,7 @@ This repository hosts my **personal cybersecurity portfolio website**, built to 
 
 The site is live via **GitHub Pages** and is intended for recruiters, professors, and security professionals interested in my technical experience and documentation skills.
 
-🔗 **Live Site:** https://<your-username>.github.io/ryan-ethier-portfolio/
+🔗 **Live Site:** https://<Ryanethier>.github.io/ryan-ethier-portfolio/
 
 ---
 
