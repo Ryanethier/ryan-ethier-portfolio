@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ryanethier.github.io/ryan-ethier-portfolio/sitemap.xml
