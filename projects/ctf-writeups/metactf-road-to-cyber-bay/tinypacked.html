@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TinyPacked &mdash; MetaCTF: Road to Cyber Bay | Ryan Ethier</title>
+<meta name="description" content="Reverse engineering write-up for TinyPacked, a MetaCTF: Road to Cyber Bay challenge involving a custom MessagePack extension format." />
+<link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/style.css" />
+</head>
+<body>
+
+<nav class="sitenav">
+  <div class="container">
+    <a href="../../../index.html" class="brand">ryan_ethier@portfolio:~$</a>
+    <ul>
+      <li><a href="../../../index.html#projects">Projects</a></li>
+      <li><a href="../../../index.html#forensics">Forensics</a></li>
+      <li><a href="../../../index.html#about">About</a></li>
+      <li><a href="../../../index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+
+<div class="breadcrumb"><a href="../../../index.html">Home</a> / Projects / <a href="../index.html">CTF &amp; Wargame Write-Ups</a> / <a href="index.html">MetaCTF: Road to Cyber Bay</a> / TinyPacked</div>
+
+<article class="writeup">
+  <span class="eyebrow">Reverse Engineering &middot; 148 pts</span>
+  <h1>TinyPacked</h1>
+  <p class="subtitle">MetaCTF: Road to Cyber Bay</p>
+
+  <h2>Challenge Description</h2>
+  <p>
+    We are given a file <code>challenge.mp</code> that uses custom compression on top of
+    <strong>MessagePack</strong>. The library defines new negative extension types that standard
+    decoders cannot parse.
+  </p>
+
+  <h2>Key Insight</h2>
+  <p>Two custom encodings are implemented:</p>
+  <ol>
+    <li>
+      <strong><code>_EXT_TYPE_DICT_MAP (-2)</code></strong>
+      <ul>
+        <li>Stores all unique keys once.</li>
+        <li>Replaces dictionary keys with integer indices.</li>
+        <li>Decoding requires rebuilding the dict from index &rarr; key list.</li>
+      </ul>
+    </li>
+    <li>
+      <strong><code>_EXT_TYPE_CESAR_B (-4)</code></strong>
+      <ul>
+        <li>Delta-encoding for arrays of small integer differences.</li>
+        <li>First number stored normally, subsequent values stored as deltas.</li>
+        <li>Decoding requires cumulative addition.</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h2>Solution</h2>
+  <p>We write a custom unpacker that reverses both encodings:</p>
+  <pre><code>import tinypack
+
+with open("challenge.mp", "rb") as f:
+    packed_data = f.read()
+
+data = tinypack.unpackb(packed_data, raw=False)
+print(data)</code></pre>
+  <p>Output reconstructs the original structure, revealing the flag as ASCII codes inside arrays:</p>
+  <pre><code>{
+  "name": "Alice",
+  "age": [77, 101, 116, 97, 67, 84, 70, 123, ... , 125],
+  "city": "Wonderland",
+  "hobbies": ["reading", "adventuring", [77,101,...,125], "tea parties"]
+}</code></pre>
+  <p>Decoding the numeric arrays yields the flag.</p>
+
+  <h2>Flag</h2>
+  <p><code>MetaCTF{redacted}</code></p>
+
+  <h2>Takeaways</h2>
+  <ul>
+    <li>MessagePack extension types can be hijacked for CTF challenges.</li>
+    <li>Always check for <strong>custom serialization logic</strong> in provided libraries.</li>
+  </ul>
+</article>
+
+</div>
+</body>
+</html>

@@ -29,8 +29,13 @@ assets/
   favicon.svg
 projects/
   ctf-writeups/
-    index.html                   # CTF write-up listing
-    bandit-0-10.html             # Individual write-up
+    index.html                   # CTF competition listing
+    metactf-road-to-cyber-bay/
+      index.html                 # MetaCTF: Road to Cyber Bay challenge listing
+      bitonion.html               # Individual write-up
+      docscan.html                # Individual write-up
+      election.html               # Individual write-up
+      tinypacked.html             # Individual write-up
 resume/
   resume.pdf                     # Not yet added — see resume/README.md
 robots.txt
@@ -59,8 +64,9 @@ and potential attacker activity. The report follows professional forensic method
 
 ### CTF & Wargame Write-Ups
 
-Write-ups covering Linux enumeration, privilege escalation, and exploitation fundamentals,
-starting with OverTheWire Bandit.
+Competition write-ups from MetaCTF: Road to Cyber Bay, covering reverse engineering, binary
+exploitation, and forensics/data analysis. Team LinuxCats333 placed 34th of 400+ teams and
+qualified for the invite-only championship in Tampa.
 
 ---
 

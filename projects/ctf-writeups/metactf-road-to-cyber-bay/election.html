@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Election Fraud Detection &mdash; MetaCTF: Road to Cyber Bay | Ryan Ethier</title>
+<meta name="description" content="Forensics and data analysis write-up detecting voting machine tampering using statistical consistency checks, from MetaCTF: Road to Cyber Bay." />
+<link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/style.css" />
+</head>
+<body>
+
+<nav class="sitenav">
+  <div class="container">
+    <a href="../../../index.html" class="brand">ryan_ethier@portfolio:~$</a>
+    <ul>
+      <li><a href="../../../index.html#projects">Projects</a></li>
+      <li><a href="../../../index.html#forensics">Forensics</a></li>
+      <li><a href="../../../index.html#about">About</a></li>
+      <li><a href="../../../index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+
+<div class="breadcrumb"><a href="../../../index.html">Home</a> / Projects / <a href="../index.html">CTF &amp; Wargame Write-Ups</a> / <a href="index.html">MetaCTF: Road to Cyber Bay</a> / Election Fraud Detection</div>
+
+<article class="writeup">
+  <span class="eyebrow">Forensics / Data Analysis &middot; 186 pts</span>
+  <h1>Election Fraud Detection</h1>
+  <p class="subtitle">MetaCTF: Road to Cyber Bay</p>
+
+  <h2>Challenge Description</h2>
+  <p>
+    We are provided with voting data from the fictional state of <em>Skillia</em>. Suspicious dropoff
+    in votes for candidate <strong>B</strong> is observed only for in-person presidential votes at
+    certain stations.
+  </p>
+  <p><strong>Cheated results (after tampering):</strong></p>
+  <ul>
+    <li>President: B = 1,943,366 | A = 1,933,743 | Undervote = 60,741</li>
+  </ul>
+  <p><strong>True results (before tampering):</strong></p>
+  <ul>
+    <li>President: B = 1,918,963 | A = 1,958,146 | Undervote = 60,741</li>
+  </ul>
+  <p>Other races (Senate, Governor, ballot initiatives) were unaffected.</p>
+
+  <h2>Key Insight</h2>
+  <p>
+    By comparing <strong>down-ballot consistency</strong> (Senate/Governor) against presidential
+    results at each station, we can detect anomalies. Significant gaps suggest tampered machines
+    flipping votes from A &rarr; B.
+  </p>
+
+  <h2>Solution Approach</h2>
+  <p>We analyze with Python (pandas, numpy, scipy):</p>
+  <ol>
+    <li>Filter for <code>voter_type == in_person</code>.</li>
+    <li>For each station:
+      <ul>
+        <li>Compute presidential A % vs. down-ballot A %.</li>
+        <li>Calculate a Z-score for the gap.</li>
+        <li>Compute p-values (probability of randomness).</li>
+      </ul>
+    </li>
+    <li>Sort by lowest p-values &rarr; most suspicious stations.</li>
+  </ol>
+  <pre><code>import pandas as pd, numpy as np
+from scipy.stats import norm
+
+df = pd.read_csv("skillia_voting_records.csv")
+in_person = df[df["voter_type"] == "in_person"]
+
+def compute_stats(group):
+    n = len(group)
+    pres_A = (group["vote_president"] == "A").sum()
+    senate_A = (group["vote_senate"] == "A").sum()
+    governor_A = (group["vote_governor"] == "A").sum()
+    pres_rate = pres_A / n
+    downballot_rate = (senate_A + governor_A) / (2*n)
+    std_err = np.sqrt(downballot_rate*(1-downballot_rate)/n)
+    z = (pres_rate - downballot_rate) / std_err if std_err &gt; 0 else 0
+    p = norm.cdf(z)
+    return pd.Series({"gap": downballot_rate - pres_rate, "z_score": z, "p_value": p})
+
+results = in_person.groupby("voting_station_id").apply(compute_stats)
+print(results.sort_values("p_value").head(6))</code></pre>
+
+  <h2>Output</h2>
+  <p>The six most suspicious stations (IDs):</p>
+  <pre><code>81b7bc0c, 1251749b, 4b45c819, 1fe457e4, a4defb9c, 329071ee</code></pre>
+
+  <h2>Flag</h2>
+  <p><code>MetaCTF{redacted}</code></p>
+
+  <h2>Takeaways</h2>
+  <ul>
+    <li>Election integrity can be audited using <strong>statistical consistency checks</strong>.</li>
+    <li>Down-ballot analysis is a powerful tool to catch anomalies.</li>
+  </ul>
+</article>
+
+</div>
+</body>
+</html>

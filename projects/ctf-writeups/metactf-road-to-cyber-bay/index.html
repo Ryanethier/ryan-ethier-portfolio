@@ -3,39 +3,39 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CTF & Wargame Write-Ups | Ryan Ethier</title>
-<meta name="description" content="Capture-the-Flag competition write-ups covering reverse engineering, binary exploitation, and forensics challenges." />
-<link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+<title>MetaCTF: Road to Cyber Bay | Ryan Ethier</title>
+<meta name="description" content="Write-ups from MetaCTF: Road to Cyber Bay, covering reverse engineering, binary exploitation, and forensics/data analysis challenges." />
+<link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../assets/style.css" />
+<link rel="stylesheet" href="../../../assets/style.css" />
 </head>
 <body>
 
 <nav class="sitenav">
   <div class="container">
-    <a href="../../index.html" class="brand">ryan_ethier@portfolio:~$</a>
+    <a href="../../../index.html" class="brand">ryan_ethier@portfolio:~$</a>
     <ul>
-      <li><a href="../../index.html#projects">Projects</a></li>
-      <li><a href="../../index.html#forensics">Forensics</a></li>
-      <li><a href="../../index.html#about">About</a></li>
-      <li><a href="../../index.html#contact">Contact</a></li>
+      <li><a href="../../../index.html#projects">Projects</a></li>
+      <li><a href="../../../index.html#forensics">Forensics</a></li>
+      <li><a href="../../../index.html#about">About</a></li>
+      <li><a href="../../../index.html#contact">Contact</a></li>
     </ul>
   </div>
 </nav>
 
 <div class="container">
 
-<div class="breadcrumb"><a href="../../index.html">Home</a> / Projects / CTF &amp; Wargame Write-Ups</div>
+<div class="breadcrumb"><a href="../../../index.html">Home</a> / Projects / <a href="../index.html">CTF &amp; Wargame Write-Ups</a> / MetaCTF: Road to Cyber Bay</div>
 
 <header>
   <span class="eyebrow">Case Log</span>
-  <h1>CTF & Wargame Write-Ups</h1>
+  <h1>MetaCTF: Road to Cyber Bay</h1>
   <p>
-    Write-ups from Capture-the-Flag competitions, covering reverse engineering, binary exploitation,
-    and forensics/data analysis. Each entry walks through the approach, the tools used, and what the
-    challenge was actually testing.
+    Team competition covering reverse engineering, binary exploitation, and forensics/data analysis
+    challenges. Our team, LinuxCats333, placed 34th out of 400+ teams and qualified for the
+    invite-only championship event in Tampa. Below are detailed write-ups for each challenge we solved.
   </p>
 </header>
 
@@ -43,24 +43,64 @@
   <div class="grid">
 
     <div class="card">
-      <h3><span class="case-no">01</span> MetaCTF: Road to Cyber Bay</h3>
+      <h3><span class="case-no">01</span> BitOnion</h3>
       <p>
-        Team competition covering reverse engineering, binary exploitation, and forensics challenges.
-        Our team, LinuxCats333, placed 34th out of 400+ teams and qualified for the invite-only
-        championship event in Tampa.
+        A layered, reversible bit-manipulation cipher applied to a flag file. Reverse engineering the
+        binary reveals the operation log appended after each pass, letting us peel the transformations
+        back in reverse.
       </p>
       <div class="meta">
-        <span>Reverse Engineering · Pwn · Forensics</span>
-        <span class="status-tag done">4 Write-Ups</span>
+        <span>Reverse Engineering</span>
+        <span class="status-tag done">207 pts</span>
       </div>
       <div class="meta">
-        <a href="metactf-road-to-cyber-bay/index.html">View Write-Ups &rarr;</a>
+        <a href="bitonion.html">Read Write&#8209;Up &rarr;</a>
       </div>
     </div>
 
-    <div class="empty-card">
-      <span>NEXT ENTRY // IN PROGRESS</span>
-      More competition write-ups will be added here as they're completed.
+    <div class="card">
+      <h3><span class="case-no">02</span> DocScan</h3>
+      <p>
+        A document-scanning utility with a stack buffer overflow that cascades into a format string
+        vulnerability, enabling a write-what-where primitive and a GOT overwrite to pop a shell.
+      </p>
+      <div class="meta">
+        <span>Binary Exploitation</span>
+        <span class="status-tag done">211 pts</span>
+      </div>
+      <div class="meta">
+        <a href="docscan.html">Read Write&#8209;Up &rarr;</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="case-no">03</span> Election Fraud Detection</h3>
+      <p>
+        Statistical analysis of a fictional state's voting records to detect machine tampering by
+        comparing presidential vote rates against down-ballot consistency at each station.
+      </p>
+      <div class="meta">
+        <span>Forensics / Data Analysis</span>
+        <span class="status-tag done">186 pts</span>
+      </div>
+      <div class="meta">
+        <a href="election.html">Read Write&#8209;Up &rarr;</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="case-no">04</span> TinyPacked</h3>
+      <p>
+        A custom MessagePack extension format using dictionary-key deduplication and delta-encoded
+        integer arrays. Writing a custom unpacker reconstructs the original structure and the flag.
+      </p>
+      <div class="meta">
+        <span>Reverse Engineering</span>
+        <span class="status-tag done">148 pts</span>
+      </div>
+      <div class="meta">
+        <a href="tinypacked.html">Read Write&#8209;Up &rarr;</a>
+      </div>
     </div>
 
   </div>

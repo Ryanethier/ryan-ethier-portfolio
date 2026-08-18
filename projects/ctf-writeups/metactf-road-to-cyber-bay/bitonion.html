@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BitOnion &mdash; MetaCTF: Road to Cyber Bay | Ryan Ethier</title>
+<meta name="description" content="Reverse engineering write-up for BitOnion, a MetaCTF: Road to Cyber Bay challenge reversing a layered bit-manipulation cipher." />
+<link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../assets/style.css" />
+</head>
+<body>
+
+<nav class="sitenav">
+  <div class="container">
+    <a href="../../../index.html" class="brand">ryan_ethier@portfolio:~$</a>
+    <ul>
+      <li><a href="../../../index.html#projects">Projects</a></li>
+      <li><a href="../../../index.html#forensics">Forensics</a></li>
+      <li><a href="../../../index.html#about">About</a></li>
+      <li><a href="../../../index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+
+<div class="breadcrumb"><a href="../../../index.html">Home</a> / Projects / <a href="../index.html">CTF &amp; Wargame Write-Ups</a> / <a href="index.html">MetaCTF: Road to Cyber Bay</a> / BitOnion</div>
+
+<article class="writeup">
+  <span class="eyebrow">Reverse Engineering &middot; 207 pts</span>
+  <h1>BitOnion</h1>
+  <p class="subtitle">MetaCTF: Road to Cyber Bay</p>
+
+  <h2>Challenge Description</h2>
+  <p>
+    We are given two files: a binary called <code>bitonion.bin</code>, and a seemingly-random file
+    called <code>flag_onion.txt</code>.
+  </p>
+  <pre><code>rethier@kali:~$ file *
+bitonion.bin:   ELF 64-bit LSB pie executable, x86-64, dynamically linked, not stripped
+flag_onion.txt: data
+
+rethier@kali:~$ hexdump -C flag_onion.txt
+00000000  85 07 16 47 65 14 35 e6  56 76 52 27 76 12 87 66  |...Ge.5.VvR'v..f|
+00000010  a4 12 76 62 a4 47 a4 77  42 16 a4 97 42 e7 62 a4  |..vb.G.wB...B.b.|
+...
+00000830  01 06 06 01 01 18 20 02  03                       |...... ..|
+00000839</code></pre>
+
+  <h2>Blackbox Testing</h2>
+  <p>Running the binary shows us how it is meant to be used:</p>
+  <pre><code>rethier@kali:~$ ./bitonion.bin
+Usage: ./bitonion.bin -i infile -o outfile -c count</code></pre>
+  <p>We test with some sample input:</p>
+  <pre><code>rethier@kali:~$ echo -n 'TEST' > test.txt
+
+rethier@kali:~$ ./bitonion.bin -i test.txt -o out.txt -c 1
+Applied 01 e9
+
+rethier@kali:~$ hexdump -C out.txt
+00000000  bd ac ba bd 01 e9                                 |......|</code></pre>
+  <p>Additional runs show:</p>
+  <ul>
+    <li>The program prints <code>Applied XX XX</code> exactly <code>count</code> times.</li>
+    <li>The first byte of each operation (<code>00&ndash;03</code>) maps to a specific bitwise operation.</li>
+    <li>The output file grows by <code>count * 2</code> bytes.</li>
+    <li>The last two bytes of the output always match the printed operation and operand.</li>
+  </ul>
+
+  <h2>Reverse Engineering</h2>
+  <p>
+    Opening the binary in IDA Free, we see that <strong>symbols are included</strong>, making analysis
+    easier. The decompiled pseudocode shows that:
+  </p>
+  <ol>
+    <li>The input file is read into memory.</li>
+    <li>A loop runs <code>count</code> times, applying a random bit operation each time:
+      <ul>
+        <li><code>0x00</code> &rarr; NOT</li>
+        <li><code>0x01</code> &rarr; XOR (with random key)</li>
+        <li><code>0x02</code> &rarr; ROR (rotate right, random 1&ndash;7)</li>
+        <li><code>0x03</code> &rarr; ROL (rotate left, random 1&ndash;7)</li>
+      </ul>
+    </li>
+    <li>After each operation, the operation ID and operand are appended to the file.</li>
+  </ol>
+  <p>
+    <strong>Key Insight:</strong> The final two bytes of the file are not random &mdash; they record
+    the operation and operand used. By repeatedly peeling these back in reverse, we can reconstruct
+    the original plaintext.
+  </p>
+
+  <h2>Solving</h2>
+  <p>The solution process is straightforward:</p>
+  <ol>
+    <li>Read the last two bytes (operation + operand).</li>
+    <li>Undo that operation on the rest of the file.</li>
+    <li>Discard those last two bytes.</li>
+    <li>Repeat until the original data emerges.</li>
+  </ol>
+  <p>Here&rsquo;s the Python implementation:</p>
+  <pre><code># solution.py
+import sys
+
+def apply_not(buf):
+    for i in range(len(buf)):
+        buf[i] = (~buf[i]) & 0xFF
+
+def apply_xor(buf, key):
+    for i in range(len(buf)):
+        buf[i] ^= key
+
+def apply_rol(buf, cnt):
+    for i in range(len(buf)):
+        buf[i] = ((buf[i] << cnt) & 0xFF) | (buf[i] >> (8 - cnt))
+
+def apply_ror(buf, cnt):
+    for i in range(len(buf)):
+        buf[i] = (buf[i] >> cnt) | ((buf[i] << (8 - cnt)) & 0xFF)
+
+if len(sys.argv) != 2:
+    print(f"Usage: {sys.argv[0]} &lt;onion file&gt;")
+    sys.exit(0)
+
+buf = bytearray(open(sys.argv[1], "rb").read())
+
+while True:
+    op = buf[-2]
+    operand = buf[-1]
+    buf = buf[:-2]
+
+    if op == 0x00:
+        apply_not(buf)
+    elif op == 0x01:
+        apply_xor(buf, operand)
+    elif op == 0x02:
+        apply_ror(buf, operand)
+    elif op == 0x03:
+        apply_rol(buf, operand)
+
+    print(f"Reversed {op:02x} {operand:02x}")
+
+    if buf[:8] == b"MetaCTF{":
+        end = buf.find(b"}")
+        print("Flag: " + buf[:end+1].decode())
+        sys.exit(0)</code></pre>
+  <p>Running this on <code>flag_onion.txt</code> produces the correct flag.</p>
+
+  <h2>Flag</h2>
+  <p><code>MetaCTF{redacted}</code></p>
+
+  <h2>Takeaways</h2>
+  <ul>
+    <li>Always test binaries as a &ldquo;black box&rdquo; before diving into disassembly.</li>
+    <li>Appended metadata (like the operation/operand bytes here) can be a clue.</li>
+    <li>Once you recognize the reversible structure, automation with Python makes quick work of layered encodings.</li>
+  </ul>
+</article>
+
+</div>
+</body>
+</html>
