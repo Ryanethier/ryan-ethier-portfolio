@@ -37,7 +37,7 @@ projects/
       election.html               # Individual write-up
       tinypacked.html             # Individual write-up
 resume/
-  resume.pdf                     # Not yet added — see resume/README.md
+  resume.pdf                     
 robots.txt
 sitemap.xml
 README.md
