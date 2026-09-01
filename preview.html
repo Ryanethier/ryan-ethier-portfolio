@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Artistic Life — Preview Treatments | Ryan Ethier Portfolio</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f14;
+    --panel: #121826;
+    --text: #e6e8ee;
+    --muted: #9aa3b2;
+    --accent: #4da3ff;
+    --accent-dim: #2c5d8a;
+    --border: #1f2937;
+    --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+    /* bolder-identity extras */
+    --green: #6ee7a7;
+    --amber: #f5c563;
+    --magenta: #c58af5;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ---------- Switcher chrome ---------- */
+  .switcher {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(11, 15, 20, 0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .switcher .label {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-right: 0.5rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .switcher button {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+  .switcher button:hover { color: var(--text); border-color: var(--accent-dim); }
+  .switcher button.active {
+    color: #04101f;
+    background: var(--accent);
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+  .switcher .hint {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .stage { display: none; }
+  .stage.active { display: block; }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem 5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .note {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+  .note strong { color: var(--text); font-weight: 500; }
+
+  /* ---------- Shared content skeleton ---------- */
+  .kicker {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  h1.name {
+    font-size: 2.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0.6rem 0 0.4rem;
+  }
+  .lede { max-width: 640px; color: var(--muted); font-size: 1.03rem; }
+  .badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.25rem 0; }
+  .badge {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+  .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 0.6rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: rgba(255,255,255,0.03);
+  }
+  .btn.primary { background: var(--accent); color: #04101f; border-color: var(--accent); }
+  .btn:hover { text-decoration: none; }
+
+  .section-head {
+    margin: 3.5rem 0 1.25rem;
+    font-size: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .card h3 { font-size: 1.05rem; margin: 0; }
+  .card .case-no { font-family: var(--mono); color: var(--accent-dim); font-size: 0.8rem; }
+  .card p { font-size: 0.9rem; color: var(--muted); margin: 0; }
+  .card .row {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  /* ================================================================
+     TREATMENT A — MOTION & POLISH
+     ================================================================ */
+  #stage-motion {
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(77,163,255,0.10), transparent 60%),
+      radial-gradient(1000px 500px at 100% 10%, rgba(110,231,167,0.06), transparent 55%),
+      linear-gradient(180deg, #0b0f14, #0e1422);
+    background-size: 200% 200%, 200% 200%, 100% 100%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    #stage-motion.active {
+      animation: driftBG 24s ease-in-out infinite alternate;
+    }
+  }
+  @keyframes driftBG {
+    0%   { background-position: 0% 0%, 100% 0%, 0 0; }
+    100% { background-position: 60% 40%, 20% 60%, 0 0; }
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 0.6ch;
+    background: var(--accent);
+    color: transparent;
+    margin-left: 0.1ch;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cursor { animation: blink 1.05s steps(1) infinite; }
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  #stage-motion .badge { transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease; }
+  #stage-motion .badge:hover { color: var(--text); border-color: var(--accent); transform: translateY(-2px); }
+
+  #stage-motion .card {
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  #stage-motion .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-dim);
+    box-shadow: 0 14px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(77,163,255,0.15);
+  }
+
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* ================================================================
+     TREATMENT B — GENERATIVE CANVAS
+     ================================================================ */
+  #stage-canvas { position: relative; background: linear-gradient(180deg, #0b0f14, #0e1422); }
+  #constellation {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    display: block;
+  }
+  #stage-canvas .wrap :is(h1, .lede, .kicker) {
+    text-shadow: 0 2px 20px rgba(11,15,20,0.6);
+  }
+  #stage-canvas .card {
+    background: rgba(18, 24, 38, 0.72);
+    backdrop-filter: blur(4px);
+  }
+
+  /* ================================================================
+     TREATMENT C — BOLDER IDENTITY
+     ================================================================ */
+  #stage-bold {
+    background:
+      linear-gradient(180deg, #0a0d13, #0c1120 60%, #0b0f18);
+  }
+  .term {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #0a0e15;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+  }
+  .term-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    background: linear-gradient(180deg, #131a29, #0f1522);
+    border-bottom: 1px solid var(--border);
+  }
+  .term-bar .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .term-bar .dot.r { background: #ff5f57; }
+  .term-bar .dot.y { background: #febc2e; }
+  .term-bar .dot.g { background: #28c840; }
+  .term-bar .title {
+    margin-left: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .term-body { padding: 1.6rem 1.4rem 1.8rem; font-family: var(--mono); font-size: 0.92rem; }
+  .term-body .prompt { color: var(--green); }
+  .term-body .flag { color: var(--amber); }
+  .term-body .out { color: var(--muted); }
+  .term-body h1.name {
+    font-family: 'Inter', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0.7rem 0 0.3rem;
+    background: linear-gradient(92deg, var(--text) 20%, var(--accent) 60%, var(--magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  #stage-bold .divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 3.5rem 0 1.25rem;
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+    color: var(--text);
+  }
+  #stage-bold .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--accent-dim) 0 8px, transparent 8px 14px);
+  }
+  #stage-bold .divider .slash { color: var(--magenta); }
+
+  #stage-bold .badges .badge:nth-child(3n+1) { border-color: var(--accent-dim); color: #bcd8f5; }
+  #stage-bold .badges .badge:nth-child(3n+2) { border-color: #1f4d38; color: var(--green); }
+  #stage-bold .badges .badge:nth-child(3n)   { border-color: #4d3e1f; color: var(--amber); }
+
+  #stage-bold .card {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  #stage-bold .card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 1.35rem; bottom: 1.35rem;
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--accent), var(--magenta));
+  }
+  #stage-bold .card .case-no {
+    color: var(--amber);
+    border: 1px solid #4d3e1f;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 640px) {
+    h1.name { font-size: 2rem; }
+    .term-body h1.name { font-size: 2.1rem; }
+    .switcher .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="switcher" role="tablist" aria-label="Preview treatments">
+  <span class="label">Treatment</span>
+  <button data-stage="motion" class="active" role="tab" aria-selected="true">A · Motion &amp; polish</button>
+  <button data-stage="canvas" role="tab" aria-selected="false">B · Generative canvas</button>
+  <button data-stage="bold" role="tab" aria-selected="false">C · Bolder identity</button>
+  <span class="hint">Same content, three visual directions — these can also be combined.</span>
+</div>
+
+<!-- ============================= A ============================= -->
+<section id="stage-motion" class="stage active" role="tabpanel">
+  <p class="note"><strong>A · Motion &amp; polish.</strong> Keeps your current design. Adds a slow drifting gradient, a typed hero line with blinking cursor, scroll-reveal on sections, and lift + glow on card hover. Respects <code>prefers-reduced-motion</code>.</p>
+  <div class="wrap">
+    <span class="kicker">ryan_ethier@portfolio:~$ <span id="typed"></span><span class="cursor" aria-hidden="true">.</span></span>
+    <h1 class="name reveal">Ryan Ethier</h1>
+    <p class="lede reveal">Cybersecurity student specializing in digital forensics, incident response, and hands-on security labs.</p>
+    <div class="badges reveal">
+      <span class="badge">Digital Forensics</span>
+      <span class="badge">Incident Response</span>
+      <span class="badge">USAF Veteran</span>
+      <span class="badge">CTFs &amp; Labs</span>
+    </div>
+    <div class="actions reveal">
+      <a href="#" class="btn primary">Download Resume</a>
+      <a href="#" class="btn">LinkedIn</a>
+      <a href="#" class="btn">GitHub</a>
+    </div>
+
+    <h2 class="section-head reveal">Selected Projects</h2>
+    <div class="grid">
+      <div class="card reveal">
+        <h3><span class="case-no">CASE-01</span> CTF &amp; Wargame Write-Ups</h3>
+        <p>Competition write-ups from MetaCTF: Road to Cyber Bay — reverse engineering, pwn, and forensics.</p>
+        <div class="row"><span>RE · Pwn · Forensics</span><a href="#">View →</a></div>
+      </div>
+      <div class="card reveal">
+        <h3><span class="case-no">CASE-00</span> Corporate Incident Investigation</h3>
+        <p>Full forensic investigation of a suspected security incident: disk image analysis, timeline reconstruction, findings.</p>
+        <div class="row"><span>FTK · Autopsy · Windows</span><a href="#">Read →</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= B ============================= -->
+<section id="stage-canvas" class="stage" role="tabpanel">
+  <canvas id="constellation" aria-hidden="true"></canvas>
+  <p class="note"><strong>B · Generative canvas.</strong> A living node network drifts behind the content and leans toward your cursor. Sits at low contrast so text stays readable. Falls back to a still field with reduced motion.</p>
+  <div class="wrap">
+    <span class="kicker">ryan_ethier@portfolio:~$</span>
+    <h1 class="name">Ryan Ethier</h1>
+    <p class="lede">Cybersecurity student specializing in digital forensics, incident response, and hands-on security labs.</p>
+    <div class="badges">
+      <span class="badge">Digital Forensics</span>
+      <span class="badge">Incident Response</span>
+      <span class="badge">USAF Veteran</span>
+      <span class="badge">CTFs &amp; Labs</span>
+    </div>
+    <div class="actions">
+      <a href="#" class="btn primary">Download Resume</a>
+      <a href="#" class="btn">LinkedIn</a>
+      <a href="#" class="btn">GitHub</a>
+    </div>
+
+    <h2 class="section-head">Selected Projects</h2>
+    <div class="grid">
+      <div class="card">
+        <h3><span class="case-no">CASE-01</span> CTF &amp; Wargame Write-Ups</h3>
+        <p>Competition write-ups from MetaCTF: Road to Cyber Bay — reverse engineering, pwn, and forensics.</p>
+        <div class="row"><span>RE · Pwn · Forensics</span><a href="#">View →</a></div>
+      </div>
+      <div class="card">
+        <h3><span class="case-no">CASE-00</span> Corporate Incident Investigation</h3>
+        <p>Full forensic investigation of a suspected security incident: disk image analysis, timeline reconstruction, findings.</p>
+        <div class="row"><span>FTK · Autopsy · Windows</span><a href="#">Read →</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= C ============================= -->
+<section id="stage-bold" class="stage" role="tabpanel">
+  <p class="note"><strong>C · Bolder identity.</strong> Pushes the design: a terminal-window hero frame, a wider accent palette (blue / green / amber / magenta), gradient display type, and ASCII section dividers.</p>
+  <div class="wrap">
+    <div class="term">
+      <div class="term-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="title">ryan_ethier@portfolio: ~/whoami</span>
+      </div>
+      <div class="term-body">
+        <div><span class="prompt">$</span> whoami <span class="flag">--full</span></div>
+        <h1 class="name">Ryan Ethier</h1>
+        <div class="out">// cybersecurity student · digital forensics · incident response · USAF veteran</div>
+      </div>
+    </div>
+
+    <div class="badges">
+      <span class="badge">Digital Forensics</span>
+      <span class="badge">Incident Response</span>
+      <span class="badge">USAF Veteran</span>
+      <span class="badge">CTFs &amp; Labs</span>
+      <span class="badge">Loyola Chicago</span>
+      <span class="badge">Blue Team</span>
+    </div>
+    <div class="actions">
+      <a href="#" class="btn primary">Download Resume</a>
+      <a href="#" class="btn">LinkedIn</a>
+      <a href="#" class="btn">GitHub</a>
+    </div>
+
+    <div class="divider">SELECTED PROJECTS <span class="slash">//</span></div>
+    <div class="grid">
+      <div class="card">
+        <h3><span class="case-no">CASE-01</span> CTF &amp; Wargame Write-Ups</h3>
+        <p>Competition write-ups from MetaCTF: Road to Cyber Bay — reverse engineering, pwn, and forensics.</p>
+        <div class="row"><span>RE · Pwn · Forensics</span><a href="#">View →</a></div>
+      </div>
+      <div class="card">
+        <h3><span class="case-no">CASE-00</span> Corporate Incident Investigation</h3>
+        <p>Full forensic investigation of a suspected security incident: disk image analysis, timeline reconstruction, findings.</p>
+        <div class="row"><span>FTK · Autopsy · Windows</span><a href="#">Read →</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Treatment switcher ---------- */
+  var buttons = document.querySelectorAll('.switcher button');
+  var stages = { motion: 'stage-motion', canvas: 'stage-canvas', bold: 'stage-bold' };
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var key = btn.dataset.stage;
+      buttons.forEach(function (b) {
+        var on = b === btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      Object.keys(stages).forEach(function (k) {
+        document.getElementById(stages[k]).classList.toggle('active', k === key);
+      });
+      if (key === 'canvas') startConstellation();
+      if (key === 'motion') runTyped();
+      window.scrollTo(0, 0);
+    });
+  });
+
+  /* ---------- A: typed hero line ---------- */
+  var typedEl = document.getElementById('typed');
+  var typedText = 'cat about.md';
+  var typedTimer = null;
+  function runTyped() {
+    if (!typedEl) return;
+    clearTimeout(typedTimer);
+    if (reduceMotion) { typedEl.textContent = typedText; return; }
+    typedEl.textContent = '';
+    var i = 0;
+    (function step() {
+      typedEl.textContent = typedText.slice(0, i++);
+      if (i <= typedText.length) typedTimer = setTimeout(step, 70);
+    })();
+  }
+  runTyped();
+
+  /* ---------- A: scroll reveal ---------- */
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('#stage-motion .reveal').forEach(function (el) { io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+  }
+
+  /* ---------- B: constellation canvas ---------- */
+  var canvas = document.getElementById('constellation');
+  var ctx = canvas.getContext('2d');
+  var nodes = [];
+  var mouse = { x: -9999, y: -9999 };
+  var raf = null;
+  var running = false;
+
+  function sizeCanvas() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function makeNodes() {
+    var count = Math.round((window.innerWidth * window.innerHeight) / 16000);
+    count = Math.max(40, Math.min(120, count));
+    nodes = [];
+    for (var i = 0; i < count; i++) {
+      nodes.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35
+      });
+    }
+  }
+  function frame() {
+    var w = window.innerWidth, h = window.innerHeight;
+    ctx.clearRect(0, 0, w, h);
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > w) n.vx *= -1;
+      if (n.y < 0 || n.y > h) n.vy *= -1;
+
+      var dxm = mouse.x - n.x, dym = mouse.y - n.y;
+      var dm = Math.sqrt(dxm * dxm + dym * dym);
+      if (dm < 160) {
+        n.x += (dxm / dm) * 0.4;
+        n.y += (dym / dm) * 0.4;
+      }
+      for (var j = i + 1; j < nodes.length; j++) {
+        var m = nodes[j];
+        var dx = n.x - m.x, dy = n.y - m.y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 130) {
+          ctx.strokeStyle = 'rgba(77,163,255,' + (0.14 * (1 - d / 130)) + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(n.x, n.y);
+          ctx.lineTo(m.x, m.y);
+          ctx.stroke();
+        }
+      }
+      ctx.fillStyle = 'rgba(150,190,235,0.55)';
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, 1.6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    if (!reduceMotion) raf = requestAnimationFrame(frame);
+  }
+  function startConstellation() {
+    if (running) return;
+    running = true;
+    sizeCanvas(); makeNodes(); frame();
+    window.addEventListener('resize', onResize);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseout', onOut);
+  }
+  function onResize() { sizeCanvas(); makeNodes(); if (reduceMotion) frame(); }
+  function onMove(e) { mouse.x = e.clientX; mouse.y = e.clientY; }
+  function onOut() { mouse.x = -9999; mouse.y = -9999; }
+})();
+</script>
+
+</body>
+</html>
