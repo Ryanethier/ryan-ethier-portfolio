@@ -15,8 +15,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css" />
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
+
+<canvas id="constellation" aria-hidden="true"></canvas>
 
 <nav class="sitenav">
   <div class="container">
@@ -33,7 +36,17 @@
 <div class="container">
 
 <header>
-  <h1>Ryan Ethier</h1>
+  <div class="term">
+    <div class="term-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="term-title">ryan_ethier@portfolio: ~/whoami</span>
+    </div>
+    <div class="term-body">
+      <div><span class="term-prompt">$</span> <span id="typed" data-text="whoami --full"></span><span class="cursor" aria-hidden="true"></span></div>
+      <h1>Ryan Ethier</h1>
+      <p class="term-out">// cybersecurity student &middot; digital forensics &middot; incident response &middot; USAF veteran</p>
+    </div>
+  </div>
   <p>
     Cybersecurity student specializing in digital forensics, incident response, and hands-on security labs.
     Experienced in forensic reporting, vulnerability analysis, and defensive monitoring through academic and
@@ -54,10 +67,10 @@
 </header>
 
 <section id="projects">
-  <h2>Selected Projects</h2>
+  <h2 class="reveal">Selected Projects</h2>
   <div class="grid">
 
-    <div class="card">
+    <div class="card reveal">
       <h3><span class="case-no">CASE-01</span> CTF & Wargame Write&#8209;Ups</h3>
       <p>
         Competition write-ups from MetaCTF: Road to Cyber Bay, covering reverse
@@ -74,7 +87,7 @@
       </div>
     </div>
 
-    <div class="empty-card">
+    <div class="empty-card reveal">
       <span>CASE-02 // IN PROGRESS</span>
       New security lab projects are actively being built and will be posted here as they're completed.
     </div>
@@ -83,8 +96,8 @@
 </section>
 
 <section id="forensics">
-  <h2>Digital Forensics Case Report</h2>
-  <div class="card">
+  <h2 class="reveal">Digital Forensics Case Report</h2>
+  <div class="card reveal">
     <h3><span class="case-no">CASE-00</span> Corporate Incident Investigation</h3>
     <p>
       Comprehensive forensic investigation of a suspected security incident involving user negligence,
@@ -105,8 +118,8 @@
 </section>
 
 <section id="about">
-  <h2>About Me</h2>
-  <p style="max-width: 800px; color: var(--muted);">
+  <h2 class="reveal">About Me</h2>
+  <p class="reveal" style="max-width: 800px; color: var(--muted);">
     I am a cybersecurity student at Loyola University Chicago and a U.S. Air Force veteran with experience in
     physical security, law enforcement operations, and IT service desk support. My interests center on digital
     forensics, incident response, and defensive security. I value clear documentation, methodical investigation,
@@ -115,8 +128,8 @@
 </section>
 
 <section id="contact">
-  <h2>Contact</h2>
-  <p class="muted">
+  <h2 class="reveal">Contact</h2>
+  <p class="muted reveal">
     Email: <a href="mailto:rethier@luc.edu">rethier@luc.edu</a><br />
     LinkedIn: <a href="https://www.linkedin.com/in/ryanethiercyber/" target="_blank" rel="noopener noreferrer">LinkedIn</a> &middot;
     GitHub: <a href="https://github.com/Ryanethier" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -128,5 +141,7 @@
 </footer>
 
 </div>
+
+<script src="assets/site.js" defer></script>
 </body>
 </html>
