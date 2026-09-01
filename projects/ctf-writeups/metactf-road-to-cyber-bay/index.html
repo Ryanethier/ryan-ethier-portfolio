@@ -10,8 +10,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../../assets/style.css" />
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
+
+<canvas id="constellation" aria-hidden="true"></canvas>
 
 <nav class="sitenav">
   <div class="container">
@@ -29,7 +32,7 @@
 
 <div class="breadcrumb"><a href="../../../index.html">Home</a> / Projects / <a href="../index.html">CTF &amp; Wargame Write-Ups</a> / MetaCTF: Road to Cyber Bay</div>
 
-<header>
+<header class="reveal">
   <span class="eyebrow">Case Log</span>
   <h1>MetaCTF: Road to Cyber Bay</h1>
   <p>
@@ -42,7 +45,7 @@
 <section>
   <div class="grid">
 
-    <div class="card">
+    <div class="card reveal">
       <h3><span class="case-no">01</span> BitOnion</h3>
       <p>
         A layered, reversible bit-manipulation cipher applied to a flag file. Reverse engineering the
@@ -58,7 +61,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card reveal">
       <h3><span class="case-no">02</span> DocScan</h3>
       <p>
         A document-scanning utility with a stack buffer overflow that cascades into a format string
@@ -73,7 +76,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card reveal">
       <h3><span class="case-no">03</span> Election Fraud Detection</h3>
       <p>
         Statistical analysis of a fictional state's voting records to detect machine tampering by
@@ -88,7 +91,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card reveal">
       <h3><span class="case-no">04</span> TinyPacked</h3>
       <p>
         A custom MessagePack extension format using dictionary-key deduplication and delta-encoded
@@ -107,5 +110,7 @@
 </section>
 
 </div>
+
+<script src="../../../assets/site.js" defer></script>
 </body>
 </html>
